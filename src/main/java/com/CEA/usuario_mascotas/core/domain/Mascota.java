@@ -4,30 +4,32 @@ import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 
+import com.CEA.usuario_mascotas.core.domain.vo.*;
+
 public class Mascota{
     private final String id;
     private String nombre;
-    private String genero;
-    private double peso;
-    private double tamaño;
-    private String color;
+    private Genero genero;
+    private Peso peso;
+    private Tamaño tamaño;
+    private Color color;
     private String raza;
     private Usuario propietario;
     private Boolean tieneVacunas;
     private String veterinario;
-    private LocalDate fechaNacimiento;
+    private FechaNacimiento fechaNacimiento;
     private boolean domesticoOSalvaje;
 
 
     // --- Constructor para CREAR nuevas mascotas ---
     public Mascota(
             String nombre,
-            String genero,
-            double peso,
-            Double tamaño,
-            String color,
+            Genero genero,
+            Peso peso,
+            Tamaño tamaño,
+            Color color,
             String raza,
-            LocalDate fechaNacimiento,
+            FechaNacimiento fechaNacimiento,
             Usuario propietario,
             boolean domesticoOSalvaje,
             boolean tieneVacunas,
@@ -36,11 +38,11 @@ public class Mascota{
         this.id = UUID.randomUUID().toString();
         this.nombre = nombre;
         this.genero = genero;
-        this.peso = validarPeso(peso);
+        this.peso = peso;
         this.tamaño = tamaño;
         this.color = color;
         this.raza = raza;
-        this.fechaNacimiento = validarFecha(fechaNacimiento);
+        this.fechaNacimiento = fechaNacimiento;
         this.propietario = propietario;
         this.domesticoOSalvaje = domesticoOSalvaje;
         this.tieneVacunas = tieneVacunas;
@@ -51,13 +53,12 @@ public class Mascota{
     public Mascota(
             String id,
             String nombre,
-            String genero,
-            double peso,
-            Double tamaño,
-            String color,
+            Genero genero,
+            Peso peso,
+            Tamaño tamaño,
+            Color color,
             String raza,
-            String especie,
-            LocalDate fechaNacimiento,
+            FechaNacimiento fechaNacimiento,
             Usuario propietario,
             boolean domesticoOSalvaje,
             boolean tieneVacunas,
@@ -66,35 +67,28 @@ public class Mascota{
         this.id = id;
         this.nombre = nombre;
         this.genero = genero;
-        this.peso = validarPeso(peso);
+        this.peso = peso;
         this.tamaño = tamaño;
         this.color = color;
         this.raza = raza;
-        this.fechaNacimiento = validarFecha(fechaNacimiento);
+        this.fechaNacimiento = fechaNacimiento;
         this.propietario = propietario;
         this.domesticoOSalvaje = domesticoOSalvaje;
         this.tieneVacunas = tieneVacunas;
         this.veterinario = veterinario;
     }
 
-    // --- Invariantes del dominio ---
-    private double validarPeso(double peso) {
-        if (peso <= 0) {
-            throw new IllegalArgumentException("El peso debe ser mayor que cero.");
-        }
-        return peso;
-    }
-
-    private LocalDate validarFecha(LocalDate fecha) {
-        if (fecha.isAfter(LocalDate.now())) {
-            throw new IllegalArgumentException("La fecha de nacimiento no puede ser futura.");
-        }
-        return fecha;
-    }
-
     // --- Reglas de dominio ---
-    public void actualizarPeso(double nuevoPeso) {
-        this.peso = validarPeso(nuevoPeso);
+    public void actualizarPeso(Peso nuevoPeso) {
+        this.peso = nuevoPeso;
+    }
+
+    public void cambiarColor(Color nuevoColor) {
+        this.color = nuevoColor;
+    }
+
+    public void cambiarTamaño(Tamaño nuevoTamaño) {
+        this.tamaño = nuevoTamaño;
     }
 
     public void marcarVacunada() {
@@ -108,12 +102,12 @@ public class Mascota{
     // --- Getters ---
     public String getId() { return id; }
     public String getNombre() { return nombre; }
-    public String getGenero() { return genero; }
-    public double getPeso() { return peso; }
-    public Double getTamaño() { return tamaño; }
-    public String getColor() { return color; }
+    public Genero getGenero() { return genero; }
+    public Peso getPeso() { return peso; }
+    public Tamaño getTamaño() { return tamaño; }
+    public Color getColor() { return color; }
     public String getRaza() { return raza; }
-    public LocalDate getFechaNacimiento() { return fechaNacimiento; }
+    public FechaNacimiento getFechaNacimiento() { return fechaNacimiento; }
     public Usuario getPropietario() { return propietario; }
     public boolean isDomesticoOSalvaje() { return domesticoOSalvaje; }
     public boolean isTieneVacunas() { return tieneVacunas; }

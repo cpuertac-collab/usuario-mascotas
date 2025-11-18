@@ -17,7 +17,7 @@ public class UsuarioEntity {
 
     private String nombre;
     private String email;
-     private String claveHash;
+    private String claveHash;
     private String rol;
 
     public UsuarioEntity() {}

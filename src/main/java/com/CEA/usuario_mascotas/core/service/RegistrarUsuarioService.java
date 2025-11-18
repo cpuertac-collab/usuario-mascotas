@@ -5,19 +5,13 @@ import com.CEA.usuario_mascotas.core.port.UsuarioRepositoryPort;
 
 public class RegistrarUsuarioService {
     
-    private final UsuarioRepositoryPort usuarioRepository;
+    private final UsuarioRepositoryPort usuarioRepositoryPort;
 
-    public RegistrarUsuarioService(UsuarioRepositoryPort usuarioRepository) {
-        this.usuarioRepository = usuarioRepository;
+    public RegistrarUsuarioService(UsuarioRepositoryPort usuarioRepositoryPort) {
+        this.usuarioRepositoryPort = usuarioRepositoryPort;
     }
 
-    public Usuario ejecutar(
-            String nombre,
-            String email,
-            String claveHash,
-            String rol
-    ) {
-        Usuario nuevo = new Usuario(nombre, email, claveHash, rol);
-        return usuarioRepository.guardar(nuevo);
+    public Usuario registrar(Usuario usuario) {
+        return usuarioRepositoryPort.guardar(usuario);
     }
 }

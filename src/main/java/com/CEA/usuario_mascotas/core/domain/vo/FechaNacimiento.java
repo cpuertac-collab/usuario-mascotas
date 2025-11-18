@@ -6,11 +6,27 @@ public final class FechaNacimiento {
 
     private final LocalDate valor;
 
+    // Constructor para LocalDate
     public FechaNacimiento(LocalDate valor) {
-        if (valor.isAfter(LocalDate.now())) {
+        validar(valor);
+        this.valor = valor;
+    }
+
+    // Nuevo constructor que recibe String (para formularios)
+    public FechaNacimiento(String valorComoTexto) {
+        if (valorComoTexto == null || valorComoTexto.isBlank()) {
+            throw new IllegalArgumentException("La fecha de nacimiento no puede estar vacía.");
+        }
+
+        LocalDate fecha = LocalDate.parse(valorComoTexto); // convierte String → LocalDate
+        validar(fecha);
+        this.valor = fecha;
+    }
+
+    private void validar(LocalDate fecha) {
+        if (fecha.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("La fecha de nacimiento no puede ser futura.");
         }
-        this.valor = valor;
     }
 
     public LocalDate getValor() {

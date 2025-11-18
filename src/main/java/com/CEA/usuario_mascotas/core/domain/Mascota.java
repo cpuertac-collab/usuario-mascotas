@@ -1,6 +1,5 @@
 package com.CEA.usuario_mascotas.core.domain;
 
-import java.time.LocalDate;
 import java.util.Objects;
 import java.util.UUID;
 

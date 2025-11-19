@@ -8,13 +8,11 @@ import com.CEA.usuario_mascotas.entrypoint.web.dto.UsuarioRequestDto;
 public class UsuarioWebMapper {
     
     public static Usuario toDomain(UsuarioRequestDto dto) {
-
-        return new Usuario(
-                UUID.randomUUID().toString(),
-                dto.getNombre(),
-                dto.getEmail(),
-                dto.getClaveHash(),
-                dto.getRol()
-        );
-    }
+    return new Usuario(
+        dto.getNombre(),
+        dto.getEmail(),
+        dto.getClaveHash(),
+        dto.getRol()
+    );
+}
 }

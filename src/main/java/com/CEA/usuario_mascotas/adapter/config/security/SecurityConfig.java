@@ -12,20 +12,14 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-
         http
-            .csrf(csrf -> csrf.disable()) // permite POST sin token
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/login",
-                    "/usuarios/crear",
-                    "/css/**",
-                    "/js/**"
-                ).permitAll()
+                .requestMatchers("/login", "/css/**", "/js/**").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form
-                .loginPage("/login")
+                .loginPage("/login")            // URL donde se muestra el login
+                .loginProcessingUrl("/login")   // URL donde se envía el POST del login
                 .defaultSuccessUrl("/usuarios/listar", true)
                 .permitAll()
             )
@@ -38,3 +32,4 @@ public class SecurityConfig {
         return http.build();
     }
 }
+

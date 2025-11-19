@@ -1,6 +1,5 @@
 package com.CEA.usuario_mascotas.entrypoint.web.mappers;
 
-import java.util.UUID;
 
 import com.CEA.usuario_mascotas.core.domain.Usuario;
 import com.CEA.usuario_mascotas.entrypoint.web.dto.UsuarioRequestDto;

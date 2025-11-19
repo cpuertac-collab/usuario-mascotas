@@ -1,6 +1,7 @@
 package com.CEA.usuario_mascotas.core.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -32,4 +33,15 @@ public class ListarUsuariosService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    public Optional<UsuarioResponseDto> buscarPorEmail(String email) {
+    return usuarioRepositoryPort.buscarPorEmail(email)
+            .map(u -> new UsuarioResponseDto(
+                    u.getId(),
+                    u.getNombre(),
+                    u.getEmail(),
+                    u.getRol()
+            ));
+}
+
 }

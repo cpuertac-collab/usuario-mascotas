@@ -18,4 +18,12 @@ public class RegistrarUsuarioService {
     public Usuario registrar(Usuario usuario) {
         return usuarioRepositoryPort.guardar(usuario);
     }
+    public void cambiarClave(String id, String nuevaClave) {
+    var user = usuarioRepositoryPort.buscarPorId(id)
+            .orElseThrow(() -> new IllegalArgumentException("Usuario no encontrado"));
+
+    user.cambiarClave(nuevaClave);
+    usuarioRepositoryPort.guardar(user);
+}
+
 }

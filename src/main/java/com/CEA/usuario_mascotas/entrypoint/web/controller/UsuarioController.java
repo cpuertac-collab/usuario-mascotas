@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.CEA.usuario_mascotas.core.service.ListarUsuariosService;
 import com.CEA.usuario_mascotas.core.service.RegistrarUsuarioService;
@@ -55,5 +56,37 @@ public class UsuarioController {
 
         return "usuarios/listar"; // templates/usuarios/listar.html
     }
-    
+
+    @GetMapping("/recuperar")
+    public String mostrarFormularioRecuperar() {
+        return "usuarios/recuperar"; // templates/usuarios/recuperar.html
+    }
+
+    // Procesar email y mostrar formulario de nueva contraseña
+@PostMapping("/recuperar")
+public String procesarRecuperar(@RequestParam("email") String email, Model model) {
+
+    var userOpt = listarUsuariosService.buscarPorEmail(email);
+
+    if (userOpt.isEmpty()) {
+        model.addAttribute("error", "No existe un usuario con ese correo.");
+        return "usuarios/recuperar";
+    }
+
+    // Pasamos el ID a la vista
+    model.addAttribute("idUsuario", userOpt.get().getId());
+
+    return "usuarios/cambiar-clave";
+    }
+
+    // Cambiar contraseña
+@PostMapping("/cambiar-clave")
+public String cambiarClave(@RequestParam("idUsuario") String id,
+                           @RequestParam("nuevaClave") String nuevaClave) {
+
+    registrarUsuarioService.cambiarClave(id, nuevaClave);
+
+    return "redirect:/login?claveCambiada";
+}
+
 }

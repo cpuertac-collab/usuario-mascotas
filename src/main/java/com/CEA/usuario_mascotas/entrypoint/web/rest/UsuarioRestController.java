@@ -12,7 +12,9 @@ import com.CEA.usuario_mascotas.core.service.ListarUsuariosService;
 import com.CEA.usuario_mascotas.entrypoint.web.dto.UsuarioRequestDto;
 import com.CEA.usuario_mascotas.entrypoint.web.dto.UsuarioResponseDto;
 import com.CEA.usuario_mascotas.entrypoint.web.mappers.UsuarioWebMapper;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/usuarios")
 public class UsuarioRestController {

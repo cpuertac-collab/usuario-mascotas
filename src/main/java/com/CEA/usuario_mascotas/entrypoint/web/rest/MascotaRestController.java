@@ -13,7 +13,9 @@ import com.CEA.usuario_mascotas.core.service.RegistrarMascotaService;
 import com.CEA.usuario_mascotas.entrypoint.web.dto.MascotaRequestDto;
 import com.CEA.usuario_mascotas.entrypoint.web.dto.MascotaResponseDto;
 import com.CEA.usuario_mascotas.entrypoint.web.mappers.MascotaWebMapper;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
+@CrossOrigin(origins = "http://localhost:5173")
 @RestController
 @RequestMapping("/api/mascotas")
 public class MascotaRestController {
@@ -52,19 +54,33 @@ public class MascotaRestController {
 
     // POST /api/mascotas → crear mascota nueva
     @PostMapping
-    public ResponseEntity<MascotaResponseDto> crear(@RequestBody MascotaRequestDto dto) {
+    public ResponseEntity<?> crear(@RequestBody MascotaRequestDto dto) {
 
+    try {
+        // 1. Buscar propietario
         Usuario propietario = usuarioRepositoryPort.buscarPorId(dto.getPropietarioId())
                 .orElseThrow(() -> new IllegalArgumentException("Propietario no encontrado"));
 
+        // 2. Construir la mascota de dominio
         Mascota mascota = MascotaWebMapper.toDomain(dto, propietario);
 
+        // 3. Guardar en BD mediante el caso de uso
         Mascota guardada = registrarMascotaService.registrar(mascota);
 
+        // 4. Devolver DTO de respuesta
         MascotaResponseDto response = MascotaWebMapper.toResponse(guardada);
 
         return ResponseEntity.ok(response);
+
+    } catch (IllegalArgumentException e) {
+        // Errores de negocio / validación → 400 Bad Request
+        return ResponseEntity.badRequest().body(e.getMessage());
+    } catch (Exception e) {
+        // Errores inesperados → 500, pero con mensaje para debug
+        e.printStackTrace(); // se verá en la consola
+        return ResponseEntity.internalServerError().body("Error interno al crear la mascota");
     }
+}
 
     // DELETE /api/mascotas/{id} → eliminar mascota
     @DeleteMapping("/{id}")

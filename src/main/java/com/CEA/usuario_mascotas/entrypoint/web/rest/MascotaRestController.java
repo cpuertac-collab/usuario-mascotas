@@ -15,7 +15,7 @@ import com.CEA.usuario_mascotas.entrypoint.web.dto.MascotaResponseDto;
 import com.CEA.usuario_mascotas.entrypoint.web.mappers.MascotaWebMapper;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/api/mascotas")
 public class MascotaRestController {

@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Usuario & Mascotas - Frontend</title>
+    <!-- Vue 3 por CDN -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+    <!-- Estilos básicos -->
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+                         Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #e5e7eb;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            padding: 40px 16px;
+        }
+
+        .layout {
+            width: 100%;
+            max-width: 1100px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .card {
+            width: 100%;
+            background: #020617;
+            border-radius: 16px;
+            padding: 24px 24px 32px;
+            box-shadow: 0 20px 45px rgba(0,0,0,0.5);
+            border: 1px solid #1f2937;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .title span.logo {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 999px;
+            background: linear-gradient(135deg, #22c55e, #0ea5e9);
+            color: #020617;
+            font-weight: 900;
+            font-size: 0.9rem;
+        }
+
+        .subtitle {
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .badge {
+            background: rgba(34,197,94,0.15);
+            border: 1px solid rgba(34,197,94,0.7);
+            color: #bbf7d0;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .badge-secondary {
+            background: rgba(59,130,246,0.15);
+            border: 1px solid rgba(59,130,246,0.7);
+            color: #bfdbfe;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        button {
+            border: none;
+            border-radius: 999px;
+            padding: 8px 16px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.2s;
+        }
+
+        button.primary {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #020617;
+            box-shadow: 0 8px 20px rgba(22,163,74,0.4);
+        }
+
+        button.primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 12px 24px rgba(22,163,74,0.55);
+        }
+
+        button.ghost {
+            background: rgba(15,23,42,0.7);
+            color: #e5e7eb;
+            border: 1px solid #374151;
+        }
+
+        button.ghost:hover {
+            background: rgba(31,41,55,0.9);
+        }
+
+        .status-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.8rem;
+            color: #9ca3af;
+            margin-bottom: 10px;
+        }
+
+        .status-row span strong { color: #e5e7eb; }
+
+        .error { color: #fecaca; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background: #020617;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #111827;
+        }
+
+        thead { background: linear-gradient(135deg, #0f172a, #020617); }
+
+        th, td {
+            padding: 10px 12px;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            font-weight: 600;
+            color: #9ca3af;
+            border-bottom: 1px solid #111827;
+        }
+
+        tbody tr:hover { background: #0b1120; }
+
+        .empty-state {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: rgba(15,23,42,0.8);
+            border: 1px dashed #4b5563;
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .empty-state strong { color: #e5e7eb; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 16px;
+            margin-top: 8px;
+        }
+
+        .form-grid.mascotas {
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            font-size: 0.8rem;
+        }
+
+        .form-group label { color: #9ca3af; }
+
+        .form-group input,
+        .form-group select {
+            border-radius: 999px;
+            border: 1px solid #374151;
+            background: #020617;
+            padding: 6px 10px;
+            color: #e5e7eb;
+            font-size: 0.85rem;
+            outline: none;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            border-color: #22c55e;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: #9ca3af;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid,
+            .form-grid.mascotas {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .card { padding: 16px; }
+
+            .card-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .form-grid,
+            .form-grid.mascotas {
+                grid-template-columns: 1fr;
+            }
+
+            table { font-size: 0.8rem; }
+
+            th, td { padding: 8px 6px; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" class="layout">
+
+    <!-- CARD: USUARIOS -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="title">
+                    <span class="logo">UM</span>
+                    <span>Usuarios</span>
+                </div>
+                <div class="subtitle">
+                    Frontend ligero en HTML + Vue consumiendo la API REST de Usuarios.
+                </div>
+            </div>
+            <div class="actions">
+                <span class="badge">
+                    {{ usuarios.length }} usuario(s)
+                </span>
+                <button class="ghost" @click="cargarUsuarios">
+                    🔄 Actualizar
+                </button>
+            </div>
+        </div>
+
+        <!-- Formulario para crear usuario -->
+        <div>
+            <div class="form-actions">
+                <span class="form-hint">
+                    Crear nuevo usuario (POST a <code>/api/usuarios</code>).
+                </span>
+            </div>
+            <form @submit.prevent="crearUsuario">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input v-model="nuevoUsuario.nombre" type="text" required placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input v-model="nuevoUsuario.email" type="email" required placeholder="correo@ejemplo.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Contraseña</label>
+                        <input v-model="nuevoUsuario.claveHash" type="password" required placeholder="******">
+                    </div>
+                    <div class="form-group">
+                        <label>Rol</label>
+                        <select v-model="nuevoUsuario.rol" required>
+                            <option value="USER">USER</option>
+                            <option value="ADMIN">ADMIN</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="primary" type="submit">
+                        ➕ Crear usuario
+                    </button>
+                    <span v-if="mensajeUsuario" class="form-hint">
+                        {{ mensajeUsuario }}
+                    </span>
+                </div>
+            </form>
+        </div>
+
+        <div class="status-row">
+            <span v-if="cargandoUsuarios">⏳ Cargando usuarios desde el backend...</span>
+            <span v-else>✅ Última actualización de usuarios completa.</span>
+            <span v-if="errorUsuarios" class="error">⚠ {{ errorUsuarios }}</span>
+        </div>
+
+        <table v-if="usuarios.length">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Email</th>
+                    <th>Rol</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="u in usuarios" :key="u.id">
+                    <td>{{ u.nombre }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.rol }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div v-if="!usuarios.length && !cargandoUsuarios && !errorUsuarios" class="empty-state">
+            <strong>No hay usuarios registrados.</strong><br>
+            Puedes crear uno con el formulario de arriba y luego se verá en la tabla.
+        </div>
+    </div>
+
+    <!-- CARD: MASCOTAS -->
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <div class="title">
+                    <span class="logo">🐾</span>
+                    <span>Mascotas</span>
+                </div>
+                <div class="subtitle">
+                    Listado de mascotas registradas, consultando la API REST de Mascotas.
+                </div>
+            </div>
+            <div class="actions">
+                <span class="badge badge-secondary">
+                    {{ mascotas.length }} mascota(s)
+                </span>
+                <button class="ghost" @click="cargarMascotas">
+                    🔄 Actualizar
+                </button>
+            </div>
+        </div>
+
+        <!-- Formulario para crear mascota -->
+        <div>
+            <div class="form-actions">
+                <span class="form-hint">
+                    Crear nueva mascota (POST a <code>/api/mascotas</code>). Asegúrate de usar un <strong>propietarioId</strong> válido de la tabla de usuarios.
+                </span>
+            </div>
+            <form @submit.prevent="crearMascota">
+                <div class="form-grid mascotas">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <input v-model="nuevaMascota.nombre" type="text" required placeholder="Nombre">
+                    </div>
+                    <div class="form-group">
+                        <label>Género</label>
+                        <select v-model="nuevaMascota.genero" required>
+                            <option value="MACHO">MACHO</option>
+                            <option value="HEMBRA">HEMBRA</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Peso (kg)</label>
+                        <input v-model.number="nuevaMascota.peso" type="number" step="0.1" min="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Tamaño</label>
+                        <select v-model="nuevaMascota.tamaño" required>
+                            <option value="PEQUEÑO">PEQUEÑO</option>
+                            <option value="MEDIANO">MEDIANO</option>
+                            <option value="GRANDE">GRANDE</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Color</label>
+                        <input v-model="nuevaMascota.color" type="text" required placeholder="Color">
+                    </div>
+                    <div class="form-group">
+                        <label>Raza</label>
+                        <input v-model="nuevaMascota.raza" type="text" required placeholder="Raza">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Nacimiento</label>
+                        <input v-model="nuevaMascota.fechaNacimiento" type="date" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Propietario ID</label>
+                        <input v-model="nuevaMascota.propietarioId" type="text" required placeholder="ID de usuario">
+                    </div>
+                    <div class="form-group">
+                        <label>Doméstico</label>
+                        <select v-model="nuevaMascota.domesticoOSalvaje" required>
+                            <option :value="true">Doméstico</option>
+                            <option :value="false">Salvaje</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tiene vacunas</label>
+                        <select v-model="nuevaMascota.tieneVacunas" required>
+                            <option :value="true">Sí</option>
+                            <option :value="false">No</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Veterinario</label>
+                        <input v-model="nuevaMascota.veterinario" type="text" placeholder="Nombre del veterinario">
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button class="primary" type="submit">
+                        ➕ Crear mascota
+                    </button>
+                    <span v-if="mensajeMascota" class="form-hint">
+                        {{ mensajeMascota }}
+                    </span>
+                </div>
+            </form>
+        </div>
+
+        <div class="status-row">
+            <span v-if="cargandoMascotas">⏳ Cargando mascotas desde el backend...</span>
+            <span v-else>✅ Última actualización de mascotas completa.</span>
+            <span v-if="errorMascotas" class="error">⚠ {{ errorMascotas }}</span>
+        </div>
+
+        <table v-if="mascotas.length">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Especie / Raza</th>
+                    <th>Color</th>
+                    <th>Peso (kg)</th>
+                    <th>Propietario (ID)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="m in mascotas" :key="m.id">
+                    <td>{{ m.nombre }}</td>
+                    <td>{{ m.especie || m.raza }}</td>
+                    <td>{{ m.color }}</td>
+                    <td>{{ m.peso }}</td>
+                    <td>{{ m.propietarioId }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div v-if="!mascotas.length && !cargandoMascotas && !errorMascotas" class="empty-state">
+            <strong>No hay mascotas registradas.</strong><br>
+            Crea mascotas con el formulario de arriba (asegurándote de usar un usuario existente como propietario).
+        </div>
+    </div>
+
+</div>
+
+<script>
+const { createApp } = Vue;
+
+createApp({
+    data() {
+        return {
+            // Usuarios
+            usuarios: [],
+            cargandoUsuarios: false,
+            errorUsuarios: null,
+            nuevoUsuario: {
+                nombre: "",
+                email: "",
+                claveHash: "",
+                rol: "USER"
+            },
+            mensajeUsuario: "",
+
+            // Mascotas
+            mascotas: [],
+            cargandoMascotas: false,
+            errorMascotas: null,
+            nuevaMascota: {
+                nombre: "",
+                genero: "MACHO",
+                peso: 1,
+                tamaño: "MEDIANO",
+                color: "",
+                raza: "",
+                fechaNacimiento: "",
+                propietarioId: "",
+                domesticoOSalvaje: true,
+                tieneVacunas: true,
+                veterinario: ""
+            },
+            mensajeMascota: ""
+        };
+    },
+    methods: {
+        async cargarUsuarios() {
+            this.cargandoUsuarios = true;
+            this.errorUsuarios = null;
+
+            try {
+                const res = await fetch("http://localhost:8080/api/usuarios");
+                if (!res.ok) {
+                    throw new Error("Error al cargar usuarios");
+                }
+                this.usuarios = await res.json();
+            } catch (err) {
+                this.errorUsuarios = err.message;
+            } finally {
+                this.cargandoUsuarios = false;
+            }
+        },
+        async crearUsuario() {
+            this.mensajeUsuario = "";
+            this.errorUsuarios = null;
+
+            try {
+                const res = await fetch("http://localhost:8080/api/usuarios", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(this.nuevoUsuario)
+                });
+
+                if (!res.ok) {
+                    throw new Error("Error al crear usuario");
+                }
+
+                const creado = await res.json();
+                this.mensajeUsuario = `Usuario "${creado.nombre}" creado correctamente.`;
+                
+                // limpiar formulario
+                this.nuevoUsuario.nombre = "";
+                this.nuevoUsuario.email = "";
+                this.nuevoUsuario.claveHash = "";
+                this.nuevoUsuario.rol = "USER";
+
+                // refrescar lista
+                this.cargarUsuarios();
+
+            } catch (err) {
+                this.errorUsuarios = err.message;
+            }
+        },
+        async cargarMascotas() {
+            this.cargandoMascotas = true;
+            this.errorMascotas = null;
+
+            try {
+                const res = await fetch("http://localhost:8080/api/mascotas");
+                if (!res.ok) {
+                    throw new Error("Error al cargar mascotas");
+                }
+                this.mascotas = await res.json();
+            } catch (err) {
+                this.errorMascotas = err.message;
+            } finally {
+                this.cargandoMascotas = false;
+            }
+        },
+        async crearMascota() {
+            this.mensajeMascota = "";
+            this.errorMascotas = null;
+
+            try {
+                const res = await fetch("http://localhost:8080/api/mascotas", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(this.nuevaMascota)
+                });
+
+                if (!res.ok) {
+                    // tratar de leer texto de error
+                    const texto = await res.text();
+                    throw new Error(texto || "Error al crear mascota");
+                }
+
+                const creada = await res.json();
+                this.mensajeMascota = `Mascota "${creada.nombre}" creada correctamente.`;
+
+                // limpiar formulario (menos el tamaño/género por comodidad)
+                this.nuevaMascota.nombre = "";
+                this.nuevaMascota.peso = 1;
+                this.nuevaMascota.color = "";
+                this.nuevaMascota.raza = "";
+                this.nuevaMascota.fechaNacimiento = "";
+                this.nuevaMascota.propietarioId = "";
+                this.nuevaMascota.veterinario = "";
+
+                // refrescar lista
+                this.cargarMascotas();
+
+            } catch (err) {
+                this.errorMascotas = err.message;
+            }
+        }
+    },
+    mounted() {
+        this.cargarUsuarios();
+        this.cargarMascotas();
+    }
+}).mount("#app");
+</script>
+
+</body>
+</html>
+
+
+
+

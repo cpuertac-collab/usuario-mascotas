@@ -1,13 +1,13 @@
-package com.CEA.usuario_mascotas.entrypoint.web.controller;
+//package com.CEA.usuario_mascotas.entrypoint.web.controller;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+//import org.springframework.stereotype.Controller;
+//import org.springframework.web.bind.annotation.GetMapping;
 
-@Controller
-public class AuthController {
+//@Controller
+//public class AuthController {
 
-    @GetMapping("/login")
-    public String login() {
-        return "usuarios/login";
-    }
-}
+    //@GetMapping("/login")
+    //public String login() {
+    //    return "usuarios/login";
+    //}
+//}
